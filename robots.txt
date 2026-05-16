@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /view-program/61cdb4ef3a3f79003c70a93b
+Disallow: /view-program/61a5507e97984bf3fbb31c56
+Disallow: /view-program/61cd86a8940446002a51eaa5
+Disallow: /view-program/61f21a2fbe3a4d0024fd5282
+Disallow: /view-program/62860d7f24ab6200382dc529
+Disallow: /view-program/64c74165bfe2480024c477ec
+
+Sitemap: https://online.mmumullana.org/sitemap.xml

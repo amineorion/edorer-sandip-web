@@ -1,0 +1,220 @@
+/**
+ * Web worker for face and object detection
+ * Based on Human.js demo patterns for optimal performance
+ *
+ * Reported by an MMU tester: face/mobile violations didn't fire on Android.
+ * Root cause was this importScripts() call against the public CDN silently
+ * failing inside the Capacitor WebView (no allow-navigation entry + no error
+ * reporting). We now (a) wrap importScripts in try/catch and post the failure
+ * back so the FaceDetector can surface it, and (b) capacitor.config.ts allows
+ * cdn.jsdelivr.net.
+ */
+
+(function loadHumanWithReporting() {
+    try {
+        self.importScripts('https://cdn.jsdelivr.net/npm/@vladmandic/human@3.1.2/dist/human.js');
+        self.postMessage({ type: 'init', stage: 'imported' });
+    } catch (err) {
+        self.postMessage({ type: 'init-error', stage: 'importScripts', message: (err && err.message) || String(err) });
+    }
+})();
+
+let human = null;
+let busy = false;
+let config = null;
+
+// Performance monitoring
+let frameCount = 0;
+let lastFrameTime = 0;
+const fpsHistory = [];
+
+// Initialize Human with optimized configuration
+async function initializeHuman(userConfig) {
+    try {
+        // Set TensorFlow backend for optimal performance
+        if (typeof self.tf !== 'undefined') {
+            await self.tf.setBackend('webgl');
+            await self.tf.ready();
+        }
+
+        // Create Human instance with optimized config
+        human = new self.Human.Human(userConfig);
+        await human.load();
+        
+        console.log('Face detector worker initialized with Human version:', human.version);
+        return true;
+    } catch (error) {
+        console.error('Failed to initialize Human in worker:', error);
+        return false;
+    }
+}
+
+// Optimized face and object detection function
+async function detectFacesAndObjects(imageData) {
+    if (!human || busy) return false;
+    
+    busy = true;
+    const startTime = performance.now();
+    
+    try {
+        // Create ImageData from transferred buffer
+        const image = new ImageData(
+            imageData.data, 
+            imageData.width, 
+            imageData.height
+        );
+        
+        // Perform detection with optimized settings
+        const result = await human.detect(image, config);
+        
+        // Calculate performance metrics
+        const processingTime = performance.now() - startTime;
+        frameCount++;
+        
+        if (fpsHistory.length >= 10) fpsHistory.shift();
+        fpsHistory.push(1000 / processingTime);
+        
+        // Process face detection results
+        const faceDetected = result.face && result.face.length > 0;
+        const multipleFaces = result.face && result.face.length > 1;
+        const faceCount = result.face ? result.face.length : 0;
+        const confidence = result.face && result.face.length > 0 ? result.face[0].score : 0;
+        
+        // Process object detection results
+        const objects = [];
+        if (result.object && result.object.length > 0) {
+            for (const obj of result.object) {
+                objects.push({
+                    label: obj.label,
+                    confidence: obj.score
+                });
+            }
+        }
+        
+        // Clean up tensors to prevent memory leaks
+        if (result.tensors) {
+            human.tf.engine().startScope();
+            human.tf.engine().endScope();
+        }
+        
+        busy = false;
+        
+        return {
+            result: {
+                faceDetected,
+                multipleFaces,
+                faceCount,
+                confidence,
+                objects
+            },
+            performance: {
+                processingTime,
+                avgFPS: fpsHistory.length > 0 ? 
+                    fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length : 0,
+                frameCount,
+                backend: human.tf.getBackend(),
+                memory: human.tf.engine().state.numBytes
+            }
+        };
+        
+    } catch (error) {
+        console.error('Face and object detection error in worker:', error);
+        busy = false;
+        return {
+            result: {
+                faceDetected: false,
+                multipleFaces: false,
+                faceCount: 0,
+                confidence: 0,
+                objects: []
+            },
+            error: error.message
+        };
+    }
+}
+
+// Handle messages from main thread
+self.onmessage = async (event) => {
+    const { type, config: userConfig, image, width, height } = event.data;
+    
+    switch (type) {
+        case 'init':
+            // Initialize Human with provided configuration
+            config = userConfig;
+            const success = await initializeHuman(userConfig);
+            self.postMessage({ 
+                type: 'init', 
+                success,
+                workerReady: success 
+            });
+            break;
+            
+        case 'detect':
+            // Perform face and object detection
+            if (!human) {
+                self.postMessage({ 
+                    type: 'detect', 
+                    result: {
+                        faceDetected: false,
+                        multipleFaces: false,
+                        faceCount: 0,
+                        confidence: 0,
+                        objects: []
+                    },
+                    error: 'Human not initialized' 
+                });
+                return;
+            }
+            
+            // Create image data object for detection
+            const imageData = {
+                data: new Uint8ClampedArray(image),
+                width: width,
+                height: height
+            };
+            
+            const detectionResult = await detectFacesAndObjects(imageData);
+            self.postMessage({ 
+                type: 'detect', 
+                ...detectionResult 
+            });
+            break;
+            
+        case 'status':
+            // Return worker status
+            self.postMessage({
+                type: 'status',
+                busy,
+                frameCount,
+                avgFPS: fpsHistory.length > 0 ? 
+                    fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length : 0,
+                backend: human ? human.tf.getBackend() : 'none',
+                memory: human ? human.tf.engine().state.numBytes : 0
+            });
+            break;
+            
+        default:
+            console.warn('Unknown message type:', type);
+    }
+};
+
+// Handle worker errors
+self.onerror = (error) => {
+    console.error('Face detector worker error:', error);
+    self.postMessage({ 
+        type: 'error', 
+        error: error.message || 'Unknown worker error' 
+    });
+};
+
+// Cleanup on worker termination
+self.onclose = () => {
+    if (human) {
+        try {
+            human.destroy();
+        } catch (error) {
+            console.error('Error destroying Human instance:', error);
+        }
+    }
+    console.log('Face detector worker terminated');
+}; 

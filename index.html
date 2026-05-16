@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <base href="/">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link id="appIcon" rel="icon" type="image/png">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <style>
+    #global-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #global-loading .loading-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #global-loading .logo {
+      height: 50px;
+      margin-bottom: 20px;
+    }
+
+    .ant-spin-lg .ant-spin-dot {
+      font-size: 32px;
+    }
+
+    .ant-spin-dot-spin {
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+      -webkit-animation: antRotate 1.2s infinite linear;
+      -moz-animation: antRotate 1.2s infinite linear;
+      -o-animation: antRotate 1.2s infinite linear;
+      animation: antRotate 1.2s infinite linear;
+    }
+
+    .ant-spin-dot {
+      position: relative;
+      display: inline-block;
+      font-size: 20px;
+      width: 1em;
+      height: 1em;
+    }
+
+    .ant-spin {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      color: rgba(0, 0, 0, 0.65);
+      font-size: 14px;
+      font-variant: tabular-nums;
+      line-height: 1.5;
+      list-style: none;
+      -webkit-font-feature-settings: 'tnum';
+      -moz-font-feature-settings: 'tnum';
+      font-feature-settings: 'tnum';
+      position: absolute;
+      color: #409bda;
+      text-align: center;
+      vertical-align: middle;
+      opacity: 0;
+      -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+      transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+      -o-transition: -o-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+      -moz-transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86), -moz-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+      transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+      transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86), -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86),
+        -moz-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86), -o-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+    }
+
+    .ant-spin-lg .ant-spin-dot i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .ant-spin-dot-item:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+
+    .ant-spin-dot-item:nth-child(2) {
+      top: 0;
+      right: 0;
+      animation-delay: 0.4s;
+    }
+
+    .ant-spin-dot-item:nth-child(3) {
+      right: 0;
+      bottom: 0;
+      animation-delay: 0.8s;
+    }
+
+    .ant-spin-dot-item:nth-child(4) {
+      bottom: 0;
+      left: 0;
+      animation-delay: 1.2s;
+    }
+
+    .ant-spin-dot-item {
+      position: absolute;
+      display: block;
+      width: 9px;
+      height: 9px;
+      background-color: #409bda;
+      -webkit-border-radius: 100%;
+      -moz-border-radius: 100%;
+      border-radius: 100%;
+      -webkit-transform: scale(0.75);
+      -moz-transform: scale(0.75);
+      -ms-transform: scale(0.75);
+      -o-transform: scale(0.75);
+      transform: scale(0.75);
+      -webkit-transform-origin: 50% 50%;
+      -moz-transform-origin: 50% 50%;
+      -ms-transform-origin: 50% 50%;
+      -o-transform-origin: 50% 50%;
+      transform-origin: 50% 50%;
+      opacity: 0.3;
+      -webkit-animation: antSpinMove 1s infinite linear alternate;
+      -moz-animation: antSpinMove 1s infinite linear alternate;
+      -o-animation: antSpinMove 1s infinite linear alternate;
+      animation: antSpinMove 1s infinite linear alternate;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .ant-spin-spinning {
+      position: static;
+      display: inline-block;
+      opacity: 1;
+    }
+
+    @keyframes antSpinMove {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes antRotate {
+      to {
+        transform: rotate(405deg);
+      }
+    }
+  </style>
+<style>@charset "UTF-8";@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap);@import url(https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&display=swap);[class*=ant-]::-ms-clear,[class^=ant-]::-ms-clear{display:none}[class*=ant-],[class*=ant-] *,[class*=ant-] :after,[class*=ant-] :before,[class^=ant-],[class^=ant-] *,[class^=ant-] :after,[class^=ant-] :before{box-sizing:border-box}body,html{width:100%;height:100%}html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-ms-overflow-style:scrollbar;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{color:#000000d9;font-size:14px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-variant:tabular-nums;line-height:1.5715;background-color:#fff;font-feature-settings:"tnum"}img{vertical-align:middle;border-style:none}html{--antd-wave-shadow-color:#1890ff;--scroll-bar:0}.ant-spin{box-sizing:border-box;margin:0;padding:0;color:#000000d9;font-size:14px;font-variant:tabular-nums;line-height:1.5715;list-style:none;font-feature-settings:"tnum";position:absolute;display:none;color:#1890ff;text-align:center;vertical-align:middle;opacity:0;transition:transform .3s cubic-bezier(.78,.14,.15,.86)}.ant-spin-spinning{position:static;display:inline-block;opacity:1}.ant-spin-dot{position:relative;display:inline-block;font-size:20px;width:1em;height:1em}.ant-spin-dot-item{position:absolute;display:block;width:9px;height:9px;background-color:#1890ff;border-radius:100%;transform:scale(.75);transform-origin:50% 50%;opacity:.3;animation:antSpinMove 1s linear infinite alternate}.ant-spin-dot-item:first-child{top:0;left:0}.ant-spin-dot-item:nth-child(2){top:0;right:0;animation-delay:.4s}.ant-spin-dot-item:nth-child(3){right:0;bottom:0;animation-delay:.8s}.ant-spin-dot-item:nth-child(4){bottom:0;left:0;animation-delay:1.2s}.ant-spin-dot-spin{transform:rotate(45deg);animation:antRotate 1.2s linear infinite}.ant-spin-lg .ant-spin-dot{font-size:32px}.ant-spin-lg .ant-spin-dot i{width:14px;height:14px}@keyframes antSpinMove{to{opacity:1}}@keyframes antRotate{to{transform:rotate(405deg)}}html{--ion-font-family:var(--ion-default-font)}body{background:var(--ion-background-color)}@supports (padding-top: 20px){html{--ion-safe-area-top:var(--ion-statusbar-padding)}}@supports (padding-top: constant(safe-area-inset-top)){html{--ion-safe-area-top:constant(safe-area-inset-top);--ion-safe-area-bottom:constant(safe-area-inset-bottom);--ion-safe-area-left:constant(safe-area-inset-left);--ion-safe-area-right:constant(safe-area-inset-right)}}@supports (padding-top: env(safe-area-inset-top)){html{--ion-safe-area-top:env(safe-area-inset-top);--ion-safe-area-bottom:env(safe-area-inset-bottom);--ion-safe-area-left:env(safe-area-inset-left);--ion-safe-area-right:env(safe-area-inset-right)}}img{max-width:100%;border:0}*{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}html{width:100%;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}html:not(.hydrated) body{display:none}body{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;padding:0;position:fixed;width:100%;max-width:100%;height:100%;max-height:100%;text-rendering:optimizeLegibility;overflow:hidden;touch-action:manipulation;-webkit-user-drag:none;-ms-content-zooming:none;word-wrap:break-word;overscroll-behavior-y:none;-webkit-text-size-adjust:none;text-size-adjust:none}html{font-family:var(--ion-font-family)}@media (prefers-color-scheme: dark){html{color:#fff;background:#000}}:root{--swiper-theme-color:#007aff}*,:after,:before{box-sizing:border-box}*{font-family:Roboto,sans-serif}*,body{font-size:var(--font-size)}body{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;background-color:var(--ion-color-white);color:var(--ion-color-dark);font-family:var(--font-family);line-height:1.5;margin:0}html{background-color:var(--ion-color-white)!important;scroll-behavior:smooth}.ant-spin-dot-item{background-color:var(--ion-color-primary)}@font-face{font-family:edorer-icons;src:url(/assets/fonts/edorer-icons.eot);src:url(/assets/fonts/edorer-icons.eot#iefix) format("embedded-opentype"),url(/assets/fonts/edorer-icons.ttf) format("truetype"),url(/assets/fonts/edorer-icons.woff) format("woff"),url(/assets/fonts/edorer-icons.svg#edorer-icons) format("svg");font-weight:400;font-style:normal;font-display:block}:root{--ion-color-primary:#4d1556;--ion-color-primary-rgb:77,21,86;--ion-color-primary-contrast:#fff;--ion-color-primary-contrast-rgb:255,255,255;--ion-color-primary-shade:#44124c;--ion-color-primary-tint:#5f2c67;--ion-color-secondary:#3dc2ff;--ion-color-secondary-rgb:61,194,255;--ion-color-secondary-contrast:#fff;--ion-color-secondary-contrast-rgb:255,255,255;--ion-color-secondary-shade:#36abe0;--ion-color-secondary-tint:#50c8ff;--ion-color-tertiary:#5260ff;--ion-color-tertiary-rgb:82,96,255;--ion-color-tertiary-contrast:#fff;--ion-color-tertiary-contrast-rgb:255,255,255;--ion-color-tertiary-shade:#4854e0;--ion-color-tertiary-tint:#6370ff;--ion-color-success:#00bb72;--ion-color-success-rgb:0,187,114;--ion-color-success-contrast:#fff;--ion-color-success-contrast-rgb:255,255,255;--ion-color-success-shade:#00a564;--ion-color-success-tint:#1ac280;--ion-color-warning:#ffb52d;--ion-color-warning-rgb:255,181,45;--ion-color-warning-contrast:#000;--ion-color-warning-contrast-rgb:0,0,0;--ion-color-warning-shade:#e09f28;--ion-color-warning-tint:#ffbc42;--ion-color-danger:#f54b4e;--ion-color-danger-rgb:245,75,78;--ion-color-danger-contrast:#fff;--ion-color-danger-contrast-rgb:255,255,255;--ion-color-danger-shade:#d84245;--ion-color-danger-tint:#f65d60;--ion-color-dark:#222428;--ion-color-dark-form:#292826;--ion-color-dark-rgb:34,36,40;--ion-color-dark-contrast:#fff;--ion-color-dark-contrast-rgb:255,255,255;--ion-color-dark-shade:#1e2023;--ion-color-dark-tint:#383a3e;--ion-color-gray:#676767;--ion-color-gray-medium:#ebebeb;--ion-color-medium:#a4a6ad;--ion-color-medium-rgb:164,166,173;--ion-color-medium-contrast:#fff;--ion-color-medium-contrast-rgb:255,255,255;--ion-color-medium-shade:#909298;--ion-color-medium-tint:#adafb5;--ion-color-light:#faf9fb;--ion-color-light-rgb:250,249,251;--ion-color-light-contrast:#000;--ion-color-light-contrast-rgb:0,0,0;--ion-color-light-shade:#f0effb;--ion-color-light-tint:#fbfafb;--ion-color-white:#fff;--ion-color-white-rgb:255,255,255;--ion-color-white-contrast:#000;--ion-color-white-contrast-rgb:0,0,0;--ion-color-white-shade:#d9d9d9;--ion-color-white-tint:#f2f2f2;--font-family:"Roboto",sans-serif;--icon-font-family:"edorer-icons";--font-size:14px;--font-size-h1:24px;--font-size-mb-h1:22px;--font-size-h2:22px;--font-size-mb-h2:20px;--font-size-h3:20px;--font-size-mb-h3:18px;--font-size-h4:18px;--font-size-mb-h4:14px;--font-size-h5:16px;--font-size-mb-h5:14px;--font-size-h6:14px;--font-size-mb-h6:12px;--font-size-p:14px;--font-size-mb-p:12px;--font-size-span:13px;--font-size-mb-span:12px;--box-shadow:0 4px 16px #0507110f;--box-shadow-shade:10px 10px 0 #2021250d;--border-radius:8px;--main-border-radius:8px;--round-border-radius:50%;--cards-border-raduis:10px;--padding:1rem;--white:#fff;--green:#00bb72;--black:#060c1f;--blue:#9cb4ff;--red:#e42324;--grey-inner:#8a94a6;--card-border-color:#e6e9e8}:root{--ed-color-danger:#dc5448;--ed-color-danger-secondary:#f02424;--ed-color-gray-primary:#ebecee;--ed-color-gray-secondary:#f1f1f2;--ed-color-info:#f2994a;--ed-color-primary:#393185;--ed-color-purple:#9b51e0;--ed-color-secondary-blue:#eaf6ff;--ed-color-secondary:#6e7077;--ed-color-success:#00ba88;--ed-color-success-secondary:#00966d;--ed-color-warning:#f5b651;--ed-side-bar-color:#eff0f6;--ed-color-primary-contrast:#fff;--ed-color-primary-contrast-rgb:255,255,255;--ed-color-dark:#0f0d23;--ed-color-live-bg:#f0242414;--grey-color:#6e7077;--text-grey-color:#a0a3bd;--ed-color-light:#f8f8fd;--ed-color-light-primary:#f0effb;--ed-color-white:#fff;--ed-color-dark-blue:#08456f;--ed-divider-color:#f0ebf3;--light-background-color:#f6f6fa;--ed-color-pink:#fdeded;--ed-color-primary-rgb:57,49,133;--ed-color-danger-rgb:175,5,5;--shadow-color-rgb:38,117,185;--border-color:#a0a3bd;--border-card:#f0effb;--ion-color-primary-rgb:255,255,255;--ion-color-success-rgb:164,209,102;--ion-color-warning-rgb:242,153,74;--ion-color-danger-rgb:207,102,118;--grey-color-rgb:55,55,62;--light-border-color:#f0effb;--label-font-size:12px;--h1-font-size:60px;--h2-font-size:48px;--h3-font-size:48px;--h4-font-size:34px;--h5-font-size:20px;--h6-font-size:16px;--h6-title-font-size:18px;--subtitle-1-font-size:16px;--subtitle-2-font-size:14px;--body-1-font-size:16px;--body-2-font-size:14px;--caption-font-size:14px;--overline-font-size:10px;--text-font-size:14px;--small-text-font-size:12px;--default-input-font-size:14px;--bold:500;--border-radius:6px;--base-height:60px;--textarea-height:120px;--button-height:48px;--select-height:50px;--uploader-height:290px;--max-logo-size:3rem;--default-input-height:48px;--input-large-height:50px;--input-small-height:30px;--default-spacing:10px;--default-button-height:44px;--small-button-height:30px;--default-button-radius:6px;--default-input-radius:6px;--default-radio-dimension:1.5rem}.relative{position:relative}</style><link rel="stylesheet" href="styles.987d65a28678d1b70442.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.987d65a28678d1b70442.css"></noscript></head>
+
+<body>
+  <app-root></app-root>
+
+  <div id="global-loading">
+    <div class="loading-container">
+      <img class="logo" id="logo-content">
+      <div class="relative">
+        <div class="ant-spin ant-spin-spinning ant-spin-lg" id="spinner">
+          <span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', function () {
+      if (xhr.status === 200) {
+        localStorage.setItem('config', xhr.response);
+        var data = JSON.parse(xhr.response);
+        document.getElementById('logo-content').src = data.logo;
+        document.getElementById('spinner').style.color = data.primaryColor + ' !important';
+        var spinner = document.getElementsByClassName('ant-spin-dot-item');
+        if (spinner && spinner.style) {
+          spinner.style.backgroundColor = data.primaryColor + ' !important';
+        }
+      }
+    });
+
+    let hostApi = 'https://api-v2.edorer.com';
+    let currentHostname = window.location.hostname.replace('www', '');
+
+    if (currentHostname === 'localhost') {
+      currentHostname = 'lms.paruluniversity.online';
+    }
+
+    xhr.open('GET', hostApi + '/api/universities/get-config?url=' + currentHostname);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.send();
+
+
+    function loadServerCSS(cssUrl) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = cssUrl;
+      link.id = 'server-loaded-css';
+      document.head.appendChild(link);
+    }
+
+
+    var cssXhr = new XMLHttpRequest();
+    cssXhr.addEventListener('load', function () {
+      if (cssXhr.status === 200) {
+        var style = document.createElement('style');
+        style.id = 'server-loaded-css';
+        style.textContent = cssXhr.responseText;
+        document.head.appendChild(style);
+      } else {
+        loadServerCSS('/assets/css/custom-theme.css');
+      }
+    });
+    cssXhr.addEventListener('error', function () {
+      loadServerCSS('/assets/css/custom-theme.css');
+    });
+    cssXhr.open('GET', hostApi + '/api/universities/get-custom-css?url=' + currentHostname);
+    cssXhr.send();
+  </script>
+
+  <script src="/assets/js/openvidu.js"></script>
+  <script async="" src="/assets/js/plyr.min.js"></script>
+  <script src="/assets/js/shaka-player.compiled.js"></script>
+  <script src="/assets/js/hls.js"></script>
+
+  <script type="text/javascript" src="/assets/js/polyfill.min.js"></script>
+  <script type="text/javascript" src="/assets/js/RecordRTC.min.js"></script>
+  <script src="/assets/js/socket.io.min.js"></script>
+  <script>
+    try {
+      socket = io(hostApi, {
+        auth: { token: localStorage.getItem('token') },
+        transports: ['websocket', 'polling']
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  </script>
+
+  <script>
+    const canonicalLinks = {
+      '/view-program/online-bachelor-of-computer-application': 'https://online.mmumullana.org/view-program/online-bachelor-of-computer-application',
+      '/view-program/online-bachelors-of-commerce-hons': 'https://online.mmumullana.org/view-program/online-bachelors-of-commerce-hons',
+      '/view-program/online-master-of-business-administration':
+        'https://online.mmumullana.org/view-program/online-master-of-business-administration',
+      '/view-program/online-master-of-science-mathematics': 'https://online.mmumullana.org/view-program/online-master-of-science-mathematics',
+      '/view-program/online-master-of-computer-application': 'https://online.mmumullana.org/view-program/online-master-of-computer-application',
+      '/view-program/online-bachelors-of-business-administration':
+        'https://online.mmumullana.org/view-program/online-bachelors-of-business-administration'
+    };
+
+    if (window.location.hostname === 'https://online.mmumullana.org') {
+      const link = document.createElement('link');
+      link.rel = 'canonical';
+      link.href = 'https://online.mmumullana.org';
+      document.head.appendChild(link);
+    }
+
+    const currentPath = window.location.pathname;
+    if (canonicalLinks[currentPath]) {
+      const link = document.createElement('link');
+      link.rel = 'canonical';
+      link.href = canonicalLinks[currentPath];
+      document.head.appendChild(link);
+    }
+  </script>
+<script src="runtime.dccca66c310cb3441eee.js" defer></script><script src="polyfills.c223352be35c279643ad.js" defer></script><script src="scripts.a04d4b35e3525056df77.js" defer></script><script src="main.23401cf0faa4ac3bae30.js" defer></script>
+
+<script async="" src="/assets/js/clipboard.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+<script async="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx" crossorigin="anonymous"></script>
+
+<script>
+  window.fwSettings = {
+    widget_id: 82000004972
+  };
+  !(function () {
+    if ('function' != typeof window.FreshworksWidget) {
+      var n = function () {
+        n.q.push(arguments);
+      };
+      (n.q = []), (window.FreshworksWidget = n);
+    }
+  })();
+  FreshworksWidget('hide');
+  FreshworksWidget('hide', 'ticketForm', ['name', 'email']);
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+  import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js';
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: 'AIzaSyBprzDWrcUyYlYUwf3HkWq1oUa_AZHNrk0',
+    authDomain: 'edorer-3e799.firebaseapp.com',
+    projectId: 'edorer-3e799',
+    storageBucket: 'edorer-3e799.appspot.com',
+    messagingSenderId: '1018007228208',
+    appId: '1:1018007228208:web:cf1125e26656b62fb1c2f5',
+    measurementId: 'G-8PC7K81QES'
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+<!--<script type='text/javascript' src='https://ind-widget.freshworks.com/widgets/82000004972.js' async defer></script>-->
+<script type="text/javascript">
+  var loadLib = (url) => {
+    let scriptEle = document.createElement('script');
+
+    scriptEle.setAttribute('src', url);
+    scriptEle.setAttribute('type', 'text/javascript');
+
+    document.body.appendChild(scriptEle);
+
+    scriptEle.addEventListener('load', () => {
+      console.log('File loaded');
+    });
+
+    scriptEle.addEventListener('error', (ev) => {
+      console.log('Error on loading file', ev);
+    });
+  };
+  // if (window.location.hostname.indexOf("parul") > -1 || window.location.hostname.indexOf("localhost") > -1) {
+  // } else {
+  //     // loadLib("https://talk.edorer.com/external_api.js");
+  // }
+  loadLib('https://meet.edorer.com/external_api.js');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.17/builds/moment-timezone-with-data.min.js"></script>
+<script src="/assets/js/human.js"></script>
+
+<script type="module">
+  import { openDefaultEditor } from '/assets/js/pintura.js';
+
+  window.openDefaultEditor = openDefaultEditor;
+</script>
+
+</body></html>
